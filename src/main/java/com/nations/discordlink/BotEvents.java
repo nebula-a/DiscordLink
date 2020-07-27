@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import javax.annotation.Nonnull;
 
-public class BotEvents<validationFromChannel> extends ListenerAdapter {
+public class BotEvents extends ListenerAdapter {
 
     private Bot bot;
     private DiscordLink plugin;

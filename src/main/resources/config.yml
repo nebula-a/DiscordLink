@@ -1,4 +1,6 @@
 general-settings:
+  auto-save: false
+  saving-interval-hours: 12
   guild-id: ""
 validation:
   prefix: "LINK "

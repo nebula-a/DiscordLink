@@ -4,6 +4,11 @@ main: com.nations.discordlink.DiscordLink
 api-version: 1.16
 authors: [Nebula_1]
 commands:
+  discordlink:
+    usage: /discordlink
+    aliases:
+      - dlink
+    permission: discordlink.discordlink
   band:
     usage: /band [IGN] [Number of days of messages to delete]
     description: Ban a player's linked discord account (on Discord only).
@@ -16,4 +21,7 @@ commands:
 permissions:
   discordlink.bandiscord:
     description: Ban a player's linked discord account on Discord.
+    default: op
+  discordlink.discordlink:
+    description: Manage DiscordLink.
     default: op
