@@ -1,8 +1,9 @@
 general-settings:
-  auto-save: false
+  auto-save: true
   saving-interval-hours: 12
   guild-id: ""
+  general-prefix: "="
 validation:
-  prefix: "LINK "
+  prefix: "LINK "# Case-Sensitive
   receive-in-channel-id: ""
   notify-in-channel-id: ""
