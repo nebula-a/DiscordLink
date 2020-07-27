@@ -1,0 +1,5 @@
+name: DiscordLink
+version: ${project.version}
+main: com.nations.discordlink.DiscordLink
+api-version: 1.16
+authors: [Nebula_1]

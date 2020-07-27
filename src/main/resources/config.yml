@@ -1,0 +1,4 @@
+general-settings:
+  guild-id: ""
+validation:
+  receive-in-channel: ""
