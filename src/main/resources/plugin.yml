@@ -1,4 +1,5 @@
 name: DiscordLink
+description: Link Discord and Minecraft accounts.
 version: ${project.version}
 main: com.nations.discordlink.DiscordLink
 api-version: 1.16
@@ -8,6 +9,7 @@ commands:
     usage: /discordlink
     aliases:
       - dlink
+      - dl
     permission: discordlink.discordlink
   band:
     usage: /band [IGN] [Number of days of messages to delete]

@@ -7,9 +7,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class BanD implements CommandExecutor {
 
-    private DiscordLink plugin;
+    private final DiscordLink plugin;
 
     private static final String PREFIX = ChatColor.WHITE+"["+ChatColor.RED+"/!\\"+ChatColor.WHITE;
     private static final String FAIL = PREFIX+ChatColor.GREEN+" That member is not linked.";
@@ -26,11 +28,11 @@ public class BanD implements CommandExecutor {
             boolean success = plugin.bot.banOnDiscord(args[0], delDays);
             if(!success) sender.sendMessage(FAIL);
             else{
-                String user = plugin.bot.jda.getUserById(plugin.links.get(args[0])).getName();
+                String user = Objects.requireNonNull(plugin.bot.jda.getUserById(plugin.links.get(args[0]))).getName();
                 sender.sendMessage(ChatColor.GREEN+"Banned "+user+".");
             }
         }
-        catch(NumberFormatException e){
+        catch(NumberFormatException ignored){
         }
         return true;
     }

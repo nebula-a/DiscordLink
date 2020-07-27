@@ -4,21 +4,21 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 public class BotEvents extends ListenerAdapter {
 
-    private Bot bot;
-    private DiscordLink plugin;
+    //private Bot bot;
+    private final DiscordLink plugin;
     private TextChannel vfc;
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent e) {
         super.onGuildMessageReceived(e);
 
-        if(e.getChannel().getId().equals(vfc))
+        if(e.getChannel().getId().equals(vfc.getId()))
         {
             User user = e.getAuthor();
             String content = e.getMessage().getContentRaw();
@@ -31,10 +31,12 @@ public class BotEvents extends ListenerAdapter {
 
     }
 
-    public BotEvents(Bot bot){
-        this.bot = bot;
+    public BotEvents(Bot bot) {
         this.plugin = bot.plugin;
-        vfc = bot.guild.getTextChannelById(bot.config.getString("validation.receive-in-channel-id"));
+        try {
+            vfc = bot.guild.getTextChannelById(Objects.requireNonNull(bot.config.getString("validation.receive-in-channel-id")));
+        }catch(NullPointerException e){
+            plugin.log.warning("Config setting validation.receive-in-channel-id is null!");
+        }
     }
-
 }

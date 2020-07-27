@@ -2,6 +2,7 @@ package com.nations.discordlink;
 
 import com.nations.discordlink.commands.BanD;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,10 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public final class DiscordLink extends JavaPlugin implements CommandExecutor, TabCompleter {
@@ -29,7 +27,9 @@ public final class DiscordLink extends JavaPlugin implements CommandExecutor, Ta
     public FileConfiguration playerlinks;
     public Bot bot;
 
-    private File linksFile = new File(this.getDataFolder(), "playerlinks.yml");
+    private final File linksFile = new File(this.getDataFolder(), "playerlinks.yml");
+
+    private BukkitTask task;
 
     // Key: In-Game Name ,
     // Value: Discord User ID
@@ -43,16 +43,12 @@ public final class DiscordLink extends JavaPlugin implements CommandExecutor, Ta
         saveConfig();
         loadLinks();
         this.bot = new Bot(this);
-        this.getServer().getPluginCommand("band").setExecutor(new BanD(this));
-        this.getServer().getPluginCommand("discordlink").setExecutor(this);
+        Objects.requireNonNull(this.getServer().getPluginCommand("band")).setExecutor(new BanD(this));
+        Objects.requireNonNull(this.getServer().getPluginCommand("discordlink")).setExecutor(this);
         if(getConfig().getBoolean("general-settings.auto-save")) {
-            Long delay = Long.parseLong(String.valueOf(60 * 60 * 20 * getConfig().getInt("general-settings.saving-interval-hours")));
-            BukkitTask task = Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-                @Override
-                public void run() {
-                    saveLinks();
-                }
-            }, delay);
+            long delay = Long.parseLong(String.valueOf(60 * 60 * 20 * getConfig().getInt("general-settings.saving-interval-hours")));
+            task = Bukkit.getScheduler().runTaskLater(this, this::saveLinks, delay);
+            task.cancel();
         }
     }
 
@@ -63,15 +59,14 @@ public final class DiscordLink extends JavaPlugin implements CommandExecutor, Ta
     public void loadLinks(){
         playerlinks = YamlConfiguration.loadConfiguration(linksFile);
         ConfigurationSection sec = playerlinks.getConfigurationSection("links.map");
-        if(sec.equals(null))
+        if(sec == null)
         {
             playerlinks.createSection("links.map");saveConfig();
             links = new HashMap<>();
         }else{
-            Map map = playerlinks.getMapList("links").get(0);
-            links = (map instanceof HashMap)
-                    ? (HashMap) map
-                            : new HashMap<>();
+            for(String key : playerlinks.getKeys(false)){
+                links.put(key, playerlinks.getString("links.map."+key));
+            }
         }
     }
     public void saveLinks(){
@@ -86,11 +81,30 @@ public final class DiscordLink extends JavaPlugin implements CommandExecutor, Ta
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        task.cancel();
         saveLinks();
     }
 
     public void displayHelp(CommandSender sender){
-        //
+        String RED = ChatColor.RED+"";
+        String YELLOW = ChatColor.YELLOW+"";
+        String GOLD = ChatColor.GOLD+"";
+        String AQUA = ChatColor.AQUA+"";
+        String BLUE = ChatColor.BLUE+"";
+        String DARKBLUE = ChatColor.DARK_BLUE+"";
+        String ULINE = ChatColor.UNDERLINE+"";
+        String RSET = ChatColor.RESET+"";
+        String[] lines = {
+                RED+"|"+AQUA+"--"+BLUE+"--"+DARKBLUE+ULINE+" Help "+RSET+BLUE+"--"+AQUA+"--"+RED+"|",
+                RED+"|"+YELLOW+" /discordlink [option] <value1> <value2>",
+                RED+"|"+GOLD+" ( /discordlink -h for more help ).",
+                RED+"|"+YELLOW+" /band [ign] [days of msg history to delete]",
+                RED+"|"+GOLD+" Ban a player's linked discord account from the Discord server.",
+                RED+"|"+YELLOW+" /remuser [ign]",
+                RED+"|"+GOLD+" Remove a user's link.",
+                RED+"|"+AQUA+"--"+BLUE+"--"+DARKBLUE+"------"+RSET+BLUE+"--"+AQUA+"--"+RED+"|"
+        };
+        for(String line : lines){ sender.sendMessage(line);}
     }
 
     @Override
@@ -100,11 +114,22 @@ public final class DiscordLink extends JavaPlugin implements CommandExecutor, Ta
             case 0:
                 displayHelp(sender);
             case 1:
-                switch(args[0].toLowerCase()){
-                    case "reloadconfig":
-                        reloadConfig();
-                // TODO: removeuser
+                if(args[0].startsWith("-")){
+                    char opt = args[0].toLowerCase().charAt(1);
+                    if(opt == 'h'){
+                        displayHelp(sender);
+                    }// convert to switch statement if adding more
                 }
+                if("reloadconfig".equals(args[0].toLowerCase())) {
+                    reloadConfig();
+                    // TODO: convert to switch statement, add /dl removeuser
+                } else {
+                    sender.sendMessage("Unknown argument: " + args[0].toLowerCase());
+                }// convert to switch statement if adding more
+            case 2:
+                if ("removeuser".equals(args[0].toLowerCase()) || "remuser".equals(args[0].toLowerCase())) {
+                    links.remove(args[1]);
+                }// convert to switch statement if adding more
         }
 
         return true;
@@ -112,13 +137,15 @@ public final class DiscordLink extends JavaPlugin implements CommandExecutor, Ta
     }
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        if(command.getPermission().equals("discordlink.discordlink")){
-            ArrayList<String> toReturn = new ArrayList<>();
-            switch(args.length){
-                case 0:
-                    toReturn.add("reloadconfig");
-            }
-        }
+            try {
+                ArrayList<String> toReturn = new ArrayList<>();
+                if (Objects.equals(command.getPermission(), "discordlink.discordlink")) {
+                    if (args.length == 0) {
+                        toReturn.add("reloadconfig");
+                    }// convert to switch statement if adding more
+                }
+                return toReturn;
+            }catch(NullPointerException ignore){}
         return null;
     }
 }
