@@ -31,6 +31,16 @@ public class Bot {
             e.printStackTrace();
         }
     }
+    public void banUser(String userId, int delDays){
+        guild.ban(jda.getUserById(userId), delDays);
+    }
+    public boolean banOnDiscord(String ign, int delDays){
+        if(plugin.links.containsKey(ign)){
+            banUser(plugin.links.get(ign), delDays);
+            return true;
+        }
+        return false;
+    }
 
 
 

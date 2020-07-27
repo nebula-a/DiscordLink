@@ -25,7 +25,7 @@ public class BotEvents<validationFromChannel> extends ListenerAdapter {
             String prefix = plugin.getStr("validation.prefix");
             if(content.startsWith(prefix))
             {
-                plugin.links.put(user.getId(),content.substring(prefix.length()));
+                plugin.links.put(content.substring(prefix.length()), user.getId());
             }
         }
 
