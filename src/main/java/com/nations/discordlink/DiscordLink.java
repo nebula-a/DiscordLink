@@ -6,7 +6,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public final class DiscordLink extends JavaPlugin {
@@ -14,6 +16,8 @@ public final class DiscordLink extends JavaPlugin {
     Logger log = this.getServer().getLogger();
 
     public FileConfiguration playerlinks;
+
+    private File linksFile = new File(this.getDataFolder(), "playerlinks.yml");
 
     public HashMap<String, String> links;
 
@@ -25,15 +29,30 @@ public final class DiscordLink extends JavaPlugin {
         loadLinks();
     }
 
+    public String getStr(String path){
+        return getConfig().getString(path);
+    }
+
     public void loadLinks(){
-        File file = new File(this.getDataFolder(), "playerlinks.yml");
-        playerlinks = YamlConfiguration.loadConfiguration(file);
-        ConfigurationSection sec = playerlinks.getConfigurationSection("links.map")
+        playerlinks = YamlConfiguration.loadConfiguration(linksFile);
+        ConfigurationSection sec = playerlinks.getConfigurationSection("links.map");
         if(sec.equals(null))
         {
             playerlinks.createSection("links.map");saveConfig();
+            links = new HashMap<>();
         }else{
-            links = new HashMap<String,String> playerlinks.get("links.map");
+            Map map = playerlinks.getMapList("links").get(0);
+            links = (map instanceof HashMap)
+                    ? (HashMap) map
+                            : new HashMap<>();
+        }
+    }
+    public void saveLinks(){
+        for(String key : links.keySet()) playerlinks.set("links.map."+key, links.get(key));
+        try {
+            playerlinks.save(linksFile);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

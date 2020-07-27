@@ -18,8 +18,15 @@ public class BotEvents<validationFromChannel> extends ListenerAdapter {
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent e) {
         super.onGuildMessageReceived(e);
 
-        if(e.getChannel().getId().equals(vfc)){
+        if(e.getChannel().getId().equals(vfc))
+        {
             User user = e.getAuthor();
+            String content = e.getMessage().getContentRaw();
+            String prefix = plugin.getStr("validation.prefix");
+            if(content.startsWith(prefix))
+            {
+                plugin.links.put(user.getId(),content.substring(prefix.length()));
+            }
         }
 
     }
@@ -27,7 +34,7 @@ public class BotEvents<validationFromChannel> extends ListenerAdapter {
     public BotEvents(Bot bot){
         this.bot = bot;
         this.plugin = bot.plugin;
-        vfc = bot.guild.getTextChannelById(bot.config.getString("validation.receive-in-channel"));
+        vfc = bot.guild.getTextChannelById(bot.config.getString("validation.receive-in-channel-id"));
     }
 
 }

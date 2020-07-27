@@ -1,4 +1,6 @@
 general-settings:
   guild-id: ""
 validation:
-  receive-in-channel: ""
+  prefix: "LINK "
+  receive-in-channel-id: ""
+  notify-in-channel-id: ""
