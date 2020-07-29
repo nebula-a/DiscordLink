@@ -20,3 +20,11 @@ Alias: /dl [...]
 /bandiscord [IGN] [Number of days of messages to delete]
  Ban a player's linked discord account (effective on Discord only).
  Aliases: band, discban, discordban, banondiscord
+
+Permissions:
+
+discordlink.bandiscord
+Ban a player's linked discord account on Discord.
+
+discordlink.discordlink
+Use /discordlink to manage DiscordLink.
