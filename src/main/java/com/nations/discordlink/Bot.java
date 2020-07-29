@@ -9,17 +9,20 @@ import org.bukkit.configuration.file.FileConfiguration;
 import javax.security.auth.login.LoginException;
 import java.util.Objects;
 
-public class Bot {
+public class Bot
+{
 
     public DiscordLink plugin;
     public FileConfiguration config;
     public JDA jda;
     public Guild guild;
 
-    public Bot(DiscordLink plugin){
+    public Bot(DiscordLink plugin)
+    {
         this.plugin = plugin;
         this.config = plugin.getConfig();
-        try {
+        try
+        {
             JDABuilder jb = JDABuilder.createDefault(plugin.getStr("general-settings.discord-bot-token"));
             jb.enableIntents(GatewayIntent.getIntents(GatewayIntent.DEFAULT));
             BotEvents botEvents = new BotEvents(this);
@@ -27,14 +30,17 @@ public class Bot {
             jda.addEventListener(botEvents);
             jda = jda.awaitReady();
             this.guild = jda.getGuildById(Objects.requireNonNull(config.getString("general-settings.guild-id")));
-        } catch (LoginException | InterruptedException | NullPointerException e) {
+        } catch (LoginException | InterruptedException | NullPointerException e)
+        {
             e.printStackTrace();
         }
     }
-    public void banUser(String userId, int delDays){
+    public void banUser(String userId, int delDays)
+    {
         guild.ban(Objects.requireNonNull(jda.getUserById(userId)), delDays).queue();
     }
-    public boolean banOnDiscord(String ign, int delDays){
+    public boolean banOnDiscord(String ign, int delDays)
+    {
         if(plugin.links.containsKey(ign)){
             banUser(plugin.links.get(ign), delDays);
             return true;

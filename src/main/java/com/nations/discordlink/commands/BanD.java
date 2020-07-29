@@ -9,21 +9,25 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class BanD implements CommandExecutor {
+public class BanD implements CommandExecutor
+{
 
     private final DiscordLink plugin;
 
     private static final String PREFIX = ChatColor.WHITE+"["+ChatColor.RED+"/!\\"+ChatColor.WHITE;
     private static final String FAIL = PREFIX+ChatColor.GREEN+" That member is not linked.";
 
-    public BanD(DiscordLink plugin){
+    public BanD(DiscordLink plugin)
+    {
         this.plugin = plugin;
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
+    {
         if(args.length < 1) return false;
-        try{
+        try
+        {
             int delDays = Integer.parseInt(args[1]);
             boolean success = plugin.bot.banOnDiscord(args[0], delDays);
             if(!success) sender.sendMessage(FAIL);
@@ -32,8 +36,7 @@ public class BanD implements CommandExecutor {
                 sender.sendMessage(ChatColor.GREEN+"Banned "+user+".");
             }
         }
-        catch(NumberFormatException ignored){
-        }
+        catch(NumberFormatException ignored) {}
         return true;
     }
 }
