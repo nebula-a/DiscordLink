@@ -145,7 +145,6 @@ public final class DiscordLink extends JavaPlugin implements CommandExecutor, Ta
                         displayHelp(sender);
                     case "reloadconfig":
                         reloadConfig();
-                        // TODO: convert to switch statement, add /dl removeuser
                         break;
                     default:
                         sender.sendMessage("Unknown argument: " + args[0].toLowerCase());
