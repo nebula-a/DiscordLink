@@ -100,36 +100,70 @@ public final class DiscordLink extends JavaPlugin implements CommandExecutor, Ta
                 RED+"|"+GOLD+" ( /discordlink -h for more help ).",
                 RED+"|"+YELLOW+" /band [ign] [days of msg history to delete]",
                 RED+"|"+GOLD+" Ban a player's linked discord account from the Discord server.",
-                RED+"|"+YELLOW+" /remuser [ign]",
-                RED+"|"+GOLD+" Remove a user's link.",
                 RED+"|"+AQUA+"--"+BLUE+"--"+DARKBLUE+"------"+RSET+BLUE+"--"+AQUA+"--"+RED+"|"
         };
         for(String line : lines){ sender.sendMessage(line);}
+    }
+    public void displayDLHelp(CommandSender sender){
+        String RED = ChatColor.RED+"";
+        String YELLOW = ChatColor.YELLOW+"";
+        String GOLD = ChatColor.GOLD+"";
+        String AQUA = ChatColor.AQUA+"";
+        String BLUE = ChatColor.BLUE+"";
+        String DARKBLUE = ChatColor.DARK_BLUE+"";
+        String ULINE = ChatColor.UNDERLINE+"";
+        String RSET = ChatColor.RESET+"";
+        String[] lines = {
+                RED+"|"+AQUA+"--"+BLUE+"--"+DARKBLUE+ULINE+" Help "+RSET+BLUE+"--"+AQUA+"--"+RED+"|",
+                RED+"|"+YELLOW+" /discordlink [option] <value1> <value2>",
+                RED+"|"+GOLD+"  Option: -h Function: Displays this message.",
+                RED+"|"+YELLOW+" /discordlink linkuser [ign] [discord id]",
+                RED+"|"+GOLD+" Manually link a Discord user and their MC username.",
+                RED+"|"+YELLOW+" /discordlink remuser [ign]",
+                RED+"|"+GOLD+" Manually remove a link.",
+                RED+"|"+AQUA+"--"+BLUE+"--"+DARKBLUE+"------"+RSET+BLUE+"--"+AQUA+"--"+RED+"|"
+        };
+        for(String line : lines){ sender.sendMessage(line);}
+
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         switch(args.length){
-            case 0:
+            case 0:// NO ARGUMENTS PROVIDED
                 displayHelp(sender);
-            case 1:
+            case 1:// 1 ARGUMENT PROVIDED (/dl [1])
                 if(args[0].startsWith("-")){
                     char opt = args[0].toLowerCase().charAt(1);
                     if(opt == 'h'){
-                        displayHelp(sender);
+                        displayDLHelp(sender);
                     }// convert to switch statement if adding more
                 }
-                if("reloadconfig".equals(args[0].toLowerCase())) {
-                    reloadConfig();
-                    // TODO: convert to switch statement, add /dl removeuser
-                } else {
-                    sender.sendMessage("Unknown argument: " + args[0].toLowerCase());
-                }// convert to switch statement if adding more
-            case 2:
-                if ("removeuser".equals(args[0].toLowerCase()) || "remuser".equals(args[0].toLowerCase())) {
-                    links.remove(args[1]);
-                }// convert to switch statement if adding more
+                switch(args[0].toLowerCase()) {
+                    case "reloadconfig":
+                        reloadConfig();
+                        // TODO: convert to switch statement, add /dl removeuser
+                        break;
+                    default:
+                        sender.sendMessage("Unknown argument: " + args[0].toLowerCase());
+                        break;
+                }
+            case 2:// 2 ARGUMENTS PROVIDED (/dl [1] [2])
+                switch(args[0].toLowerCase()){
+                    case "remuser":
+                        links.remove(args[1]);
+                        break;
+                    default:
+                        sender.sendMessage("Unknown argument: " + args[0].toLowerCase());
+                        break;
+                }
+            case 3:// 3 ARGUMENTS PROVIDED (/dl [1] [2] [3])
+                switch(args[0].toLowerCase()){
+                    case "linkuser":
+                        // /discordlink linkuser [ign] [discordid]
+                        links.put(args[1], args[2]);
+                }
         }
 
         return true;
