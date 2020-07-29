@@ -25,5 +25,5 @@ permissions:
     description: Ban a player's linked discord account on Discord.
     default: op
   discordlink.discordlink:
-    description: Manage DiscordLink.
+    description: Use /discordlink to manage DiscordLink.
     default: op

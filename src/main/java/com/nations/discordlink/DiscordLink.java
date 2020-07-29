@@ -120,7 +120,7 @@ public final class DiscordLink extends JavaPlugin implements CommandExecutor, Ta
                 RED+"|"+YELLOW+" /discordlink linkuser [ign] [discord id]",
                 RED+"|"+GOLD+" Manually link a Discord user and their MC username.",
                 RED+"|"+YELLOW+" /discordlink remuser [ign]",
-                RED+"|"+GOLD+" Manually remove a link.",
+                RED+"|"+GOLD+" Manually remove a user link.",
                 RED+"|"+AQUA+"--"+BLUE+"--"+DARKBLUE+"------"+RSET+BLUE+"--"+AQUA+"--"+RED+"|"
         };
         for(String line : lines){ sender.sendMessage(line);}
@@ -141,6 +141,8 @@ public final class DiscordLink extends JavaPlugin implements CommandExecutor, Ta
                     }// convert to switch statement if adding more
                 }
                 switch(args[0].toLowerCase()) {
+                    case "help":
+                        displayHelp(sender);
                     case "reloadconfig":
                         reloadConfig();
                         // TODO: convert to switch statement, add /dl removeuser

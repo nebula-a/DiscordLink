@@ -3,6 +3,7 @@ general-settings:
   saving-interval-hours: 12
   guild-id: ""
   general-prefix: "="
+  use-uuids: false
 validation:
   prefix: "LINK "# Case-Sensitive
   receive-in-channel-id: ""
