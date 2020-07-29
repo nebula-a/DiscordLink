@@ -20,7 +20,7 @@ public class Bot {
         this.plugin = plugin;
         this.config = plugin.getConfig();
         try {
-            JDABuilder jb = JDABuilder.createDefault("");
+            JDABuilder jb = JDABuilder.createDefault(plugin.getStr("general-settings.discord-bot-token"));
             jb.enableIntents(GatewayIntent.getIntents(GatewayIntent.DEFAULT));
             BotEvents botEvents = new BotEvents(this);
             jda = jb.build();
