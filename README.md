@@ -1,3 +1,3 @@
 # DiscordLink
 
-Under Devlopment.
+Under Development.
